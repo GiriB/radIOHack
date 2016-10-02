@@ -1,0 +1,31 @@
+{	"extensionName": "radIO",
+	"sort":0,
+	"extensionPort": 0,
+	"firmware":"1.1.103",
+	"javascriptURL":"js/arduino.js",
+	"blockSpecs": [
+		["h","radIO Program","runArduino"],
+		
+		["w", "SET SERVO DEGREES %d.servovalue","runSERVO", "90",
+		{"setup":"radio.begin();\n  radio.setRetries( 15,15 );\n  radio.enableDynamicPayloads();    \n  radio.openWritingPipe( RELAYBROADCAST(2) );\n","inc":"#include \<SPI.h\>\n#include \"giri.h\"\n#include \"nRF24L01.h\"\n#include \"RF24.h\"\n","def":"RF24 radio(9,10);\n#define BASEBROADCAST(x) (0xBB00000000LL + x)\n#define RELAYBROADCAST(x) (0xAA00000000LL + x)\n#define NODEACK(x) (0xCC00000000LL + x)\n\nstruct SENSOR{\n  float temp;\n  float humidity;\n  float pressure;\n};\n\n\n\nstruct HEADER{\n  long state;\n  long hops;\n  long src;\n  long ID;\n  SENSOR sensor;};\n HEADER header;","work":"header.ID=2;\nheader.state={0};\nheader.src=0;\nradio.write(&header,sizeof(header),true);\n","loop":""}],
+		
+		["w", "RED LED %d.digital ","runRED", "ON",
+		{"setup":"radio.begin();\n  radio.setRetries( 15,15 );\n  radio.enableDynamicPayloads();    \n  radio.openWritingPipe( RELAYBROADCAST(2) );\n","inc":"#include \<SPI.h\>\n#include \"giri.h\"\n#include \"nRF24L01.h\"\n#include \"RF24.h\"\n","def":"RF24 radio(9,10);\n#define BASEBROADCAST(x) (0xBB00000000LL + x)\n#define RELAYBROADCAST(x) (0xAA00000000LL + x)\n#define NODEACK(x) (0xCC00000000LL + x)\n\nstruct SENSOR{\n  float temp;\n  float humidity;\n  float pressure;\n};\n\n\n\nstruct HEADER{\n  long state;\n  long hops;\n  long src;\n  long ID;\n  SENSOR sensor;};\n HEADER header;","work":"header.ID=1;\nheader.state={0};\nheader.src=0;\nradio.write(&header,sizeof(header),true);\n","loop":""}],
+		
+		["w", "GREEN LED %d.digital ","runGREEN", "ON",
+		{"setup":"radio.begin();\n  radio.setRetries( 15,15 );\n  radio.enableDynamicPayloads();    \n  radio.openWritingPipe( RELAYBROADCAST(2) );\n","inc":"#include \<SPI.h\>\n#include \"giri.h\"\n#include \"nRF24L01.h\"\n#include \"RF24.h\"\n","def":"RF24 radio(9,10);\n#define BASEBROADCAST(x) (0xBB00000000LL + x)\n#define RELAYBROADCAST(x) (0xAA00000000LL + x)\n#define NODEACK(x) (0xCC00000000LL + x)\n\nstruct SENSOR{\n  float temp;\n  float humidity;\n  float pressure;\n};\n\n\n\nstruct HEADER{\n  long state;\n  long hops;\n  long src;\n  long ID;\n  SENSOR sensor;};\n HEADER header;\nint getValue(){\n	int ans =2;\n header.ID=4;\nheader.state=1;\nradio.write(&header,sizeof(header),true);\ndelay(2000);\n	radio.openReadingPipe( 1, BASEBROADCAST(2) );    //relays send on this\n  	radio.startListening();\n  if ( radio.available() ){\n      bool done = false;\n      while(!done) { done = radio.read( &header, sizeof(header) );}\n{\nans = header.state;\n \n    }\n 	\n 	radio.openWritingPipe( RELAYBROADCAST(2) );\n\nreturn ans;}\n","work":"header.ID=3;\nheader.state={0};\nheader.src=0;\nradio.write(&header,sizeof(header),true);\n","loop":""}],
+
+		["B", "GET VALUE FROM ULTRASONIC-SENSOR ","getDigital",
+		{"encode":"{d0}","setup":"","inc":"","def":"RF24 radio(9,10);\n#define BASEBROADCAST(x) (0xBB00000000LL + x)\n#define RELAYBROADCAST(x) (0xAA00000000LL + x)\n#define NODEACK(x) (0xCC00000000LL + x)\n\nstruct SENSOR{\n  float temp;\n  float humidity;\n  float pressure;\n};\n\n\n\nstruct HEADER{\n  long state;\n  long hops;\n  long src;\n  long ID;\n  SENSOR sensor;};\n HEADER header;\nint getValue(){\n	int ans =2;\n header.ID=4;\nheader.state=1;\nradio.write(&header,sizeof(header),true);\ndelay(2000);\n	radio.openReadingPipe( 1, BASEBROADCAST(2) );    //relays send on this\n  	radio.startListening();\n  if ( radio.available() ){\n      bool done = false;\n      while(!done) { done = radio.read( &header, sizeof(header) );}\n{\nans = header.state;\n      \n    }\n 	\n 	radio.openWritingPipe( RELAYBROADCAST(2) );\n\nreturn ans;}\n","work":"getValue()","loop":""}],
+				
+	],
+	"menus": {
+		"servovalue":["0","45","90","135","180"],
+		"digital":["ON","OFF"],
+	},
+	"values":{
+		"ON":1,"OFF":0,
+	},
+	"translators":{
+	}
+}
